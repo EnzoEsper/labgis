@@ -1,27 +1,28 @@
 import React, { useContext, useEffect, useState } from "react";
-import DragBox from 'ol/interaction/DragBox';
+import {DragBox, Select} from 'ol/interaction';
 import MapContext from "../Map/MapContext";
 import { Stroke, Style} from 'ol/style';
 import * as ol from 'ol';
-import { always } from 'ol/events/condition'
+import { always, shiftKeyOnly, platformModifierKeyOnly } from 'ol/events/condition'
+import './DragBoxInteraction.css';
+
 const DragBoxInteraction = () => {
 	const { map } = useContext(MapContext);
 
 	useEffect(() => {
 		if (!map) return;
 
-		let dragBoxInteraction = new DragBox({
-			condition: always,
-			style: new Style({
-				stroke: new Stroke({
-					color: [0, 0, 255, 1]
-				})
-			})
-    });
+		var dragBoxInteraction = new DragBox({
+			condition: shiftKeyOnly,
+		})
 
-		map.interactions.push(dragBoxInteraction);
+		dragBoxInteraction.on('boxend', function (e) {
+			console.log('boxend', this.getGeometry().getCoordinates());
+		})
 
-		//return () => map.controls.remove(dragBoxInteraction);
+		map.addInteraction(dragBoxInteraction);
+
+		return () => map.controls.remove(dragBoxInteraction);
 	}, [map]);
 
 	return null;

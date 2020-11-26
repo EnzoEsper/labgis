@@ -9,23 +9,13 @@ import GeoJSON from 'ol/format/GeoJSON';
 import { Controls, FullScreenControl } from "./Controls";
 import SubMenu from './components/SubMenu';
 import ActiveImageLayersList from './components/ActiveImageLayersList';
-// import Interactions from './Interactions/Interactions';
-// import DragBoxInteraction from './Interactions/DragBoxInteraction';
+import Interactions from './Interactions/Interactions';
+import DragBoxInteraction from './Interactions/DragBoxInteraction';
 
 const App = () => {
 	const [center, setCenter] = useState([-59, -27.5]);
 	const [zoom, setZoom] = useState(5);
-	const [showLayer1, setShowLayer1] = useState(false);
-	const [showLayer2, setShowLayer2] = useState(false);
 	const [layersVisibility, setLayersVisibility] = useState({});
-
-	// const setLayer1 = (name) => {
-	// 	setShowLayer1(!showLayer1);
-	// }
-
-	// const setLayer2 = (name) => {
-	// 	setShowLayer2(!showLayer2);
-	// }
 
 	// state para controlar la visibilidad de cada una de las capas
 	const onLayerClick = (name) => {
@@ -55,42 +45,16 @@ const App = () => {
 						zIndex={0}
 					/>
 					<ActiveImageLayersList layers={layersVisibility}/>
-					{/* {showLayer1 && (
-						<ImageLayer title={"veg_arborea"} source={imageWMS("http://localhost:8380/?SERVICE=WMS&REQUEST=GetCapabilities", {LAYERS: 'veg_arborea'})} zIndex={1}/>
-					)}
-					{showLayer2 && (
-						<ImageLayer title={"red_vial"} source={imageWMS("http://localhost:8380/?SERVICE=WMS&REQUEST=GetCapabilities", {LAYERS: 'red_vial'})} zIndex={2}/>
-					)} */}
-					{/* {showLayer2 && (
-						<VectorLayer
-							source={vector({ features: new GeoJSON().readFeatures(geojsonObject2, { featureProjection: get('EPSG:3857') }) })}
-							style={styles.MultiPolygon}
-						/>
-					)} */}
 				</Layers>
 				
 				<Controls>
 					<FullScreenControl />
 				</Controls>
 
-				{/* <Interactions>
+				<Interactions>
 					<DragBoxInteraction />
-				</Interactions> */}
+				</Interactions>
 			</Map>
-			{/* <div>
-				<input
-					type="checkbox"
-					checked={showLayer1}
-					onChange={event => setShowLayer1(event.target.checked)}
-				/> Johnson County
-			</div>
-			<div>
-				<input
-					type="checkbox"
-					checked={showLayer2}
-					onChange={event => setShowLayer2(event.target.checked)}
-				/> Wyandotte County
-			</div> */}
 		</div>
 	);
 }

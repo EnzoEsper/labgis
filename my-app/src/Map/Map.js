@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react"
 import "./Map.css";
 import MapContext from "./MapContext";
 import * as ol from "ol";
+// import DragBoxInteraction from "../Interactions/DragBoxInteraction";
 
 const Map = ({ children, zoom, center }) => {
 	const mapRef = useRef();
@@ -13,8 +14,7 @@ const Map = ({ children, zoom, center }) => {
 			layers: [],
 			view: new ol.View({ zoom, center, projection: 'EPSG:4326' }),
 			controls: [],
-			overlays: [],
-			// interactions: []
+			overlays: []
 		};
 
 		let mapObject = new ol.Map(options);
