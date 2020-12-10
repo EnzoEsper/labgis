@@ -2,13 +2,21 @@ import React, { Component } from 'react'
 import { Dropdown, Icon, Input, Menu } from 'semantic-ui-react'
 
 export default class SubMenu extends Component {
-  state = {};
+  state = { activeItem: "Navegacion"};
 
   handleItemClick = (e, { name }) => this.setState({ activeItem: name });
 
   onItemClick = (e, { name }) => {
     // se llama al eventhandler recibido como parametro desde el componente App
     this.props.onLayerClick(name);
+
+    this.props.onLastLayerClick(name);
+  };
+
+  onItemInteractionClick = (e, { name }) => {
+    this.setState({ activeItem: name })
+
+    this.props.onInteractionClick(name);
   };
 
   render() {
@@ -30,30 +38,30 @@ export default class SubMenu extends Component {
             <Menu.Item
               name="Navegacion"
               active={activeItem === "Navegacion"}
-              onClick={this.handleItemClick}
+              onClick={this.onItemInteractionClick}
             >
               Navegacion
             </Menu.Item>
             <Menu.Item
               name="Consulta"
               active={activeItem === "Consulta"}
-              onClick={this.handleItemClick}
+              onClick={this.onItemInteractionClick}
             >
               Consulta
             </Menu.Item>
             <Menu.Item
               name="Distancias"
               active={activeItem === "Distancias"}
-              onClick={this.handleItemClick}
+              onClick={this.onItemInteractionClick}
             >
-              Distancias
+              Medir Distancia
             </Menu.Item>
             <Menu.Item
-              name="Puntos Favoritos"
-              active={activeItem === "Puntos Favoritos"}
-              onClick={this.handleItemClick}
+              name="TrazarRuta"
+              active={activeItem === "TrazarRuta"}
+              onClick={this.onItemInteractionClick}
             >
-              Puntos Favoritos
+              Trazar Ruta
             </Menu.Item>
           </Menu.Menu>
         </Menu.Item>

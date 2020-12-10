@@ -11,16 +11,40 @@ import SubMenu from './components/SubMenu';
 import ActiveImageLayersList from './components/ActiveImageLayersList';
 import Interactions from './Interactions/Interactions';
 import DragBoxInteraction from './Interactions/DragBoxInteraction';
+import { ClickInteraction, MeasureInteraction, TraceRouteInteraction } from './Interactions';
+import FullScreenDialog from './components/FullScreenDialog';
+// import Paper from '@material-ui/core/Paper';
+import SimplePaper from './components/SimplePaper';
+import MediaCard from './components/MediaCard';
+import CardContentBlock from './components/CardContentBlock';
 
 const App = () => {
 	const [center, setCenter] = useState([-59, -27.5]);
 	const [zoom, setZoom] = useState(5);
 	const [layersVisibility, setLayersVisibility] = useState({});
+	const [interactionsActive, setInteractionsActive] = useState([{Navegacion: true}, {Consulta: false}, {Distancias: false}, {TrazarRuta: false}]);
+	const [interactionResponse, setInteractionResponse] = useState([]);
+	const [lastLayerActive, setLastLayerActive] = useState("");
+	const [layersActive, setLayersActive] = useState([]);
 
-	// state para controlar la visibilidad de cada una de las capas
+	// state for manage the visibility of each layer and its legends
 	const onLayerClick = (name) => {
-		// si la visibilidad de una capa no se encuentra definida inicialmente se toma una por defecto
-		// de lo contrario, se asigna una visibilidad inversa
+
+
+		let layerFound = layersActive.find(layer => layer === name);
+
+		if (!layerFound) {
+			setLayersActive([...layersActive, name]);
+		} else {
+			const index = layersActive.indexOf(name);
+			if (index > -1) {
+				layersActive.splice(index, 1);
+			}
+
+			setLayersActive(layersActive);
+		}
+
+		// if the visibility of a certain layer is not defined, then takes one as a default
 		let visibility = layersVisibility[name];
 		
 		if (visibility == undefined) {
@@ -35,10 +59,39 @@ const App = () => {
 		});
 	}
 
+	const onInteractionClick = (name) => {
+		
+		let newInteractions = interactionsActive.map(interaction => {
+			if (Object.keys(interaction)[0] == name) {
+				return { [name] : true };
+			}
+			return { [Object.keys(interaction)[0]] : false };
+		})
+
+		setInteractionsActive([
+			...newInteractions
+		])
+		
+	}
+
+	const onLastLayerClick = (name) => {
+		setLastLayerActive(name);
+	};
+
 	return (
 		<div className="map">
-			<SubMenu onLayerClick={onLayerClick}/>
+			{interactionResponse.length > 0 && <FullScreenDialog interactionResponse={interactionResponse} setInteractionResponse={setInteractionResponse}/>}
+			<SubMenu onLastLayerClick={onLastLayerClick} onLayerClick={onLayerClick} onInteractionClick={onInteractionClick}/>
+			{layersActive.length > 0 && <CardContentBlock layersActive={layersActive}/>}
 			<Map center={center} zoom={zoom}>
+				
+				<Interactions>
+					<DragBoxInteraction lastLayerActive={lastLayerActive} active={interactionsActive[1].Consulta} setInteractionResponse={setInteractionResponse}/>
+					<ClickInteraction lastLayerActive={lastLayerActive} active={interactionsActive[1].Consulta} setInteractionResponse={setInteractionResponse}/>
+					<MeasureInteraction active={interactionsActive[2].Distancias}/>
+					<TraceRouteInteraction active={interactionsActive[3].TrazarRuta}/>
+				</Interactions>
+
 				<Layers>
 					<TileLayer
 						source={tileWMS("http://wms.ign.gob.ar/geoserver/wms", {LAYERS: 'capabaseargenmap', VERSION: '1.1.1'})}
@@ -51,9 +104,6 @@ const App = () => {
 					<FullScreenControl />
 				</Controls>
 
-				<Interactions>
-					<DragBoxInteraction />
-				</Interactions>
 			</Map>
 		</div>
 	);

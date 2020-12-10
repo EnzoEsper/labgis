@@ -34,23 +34,27 @@ services:
     depends_on:
       - db
   
-  # express:
-  #   build: './express-web'
-  #   command: /app/node_modules/.bin/nodemon ./src/index.js
-  #   container_name: docker_app_expressweb
-  #   volumes:
-  #     - ./express-web:/app
-  #   environment: 
-  #     - NODE_ENV=development
-  #   networks:
-  #     bridge_geo:
-  #       ipv4_address: 172.28.1.3
-  #   #extra_hosts:
-  #   #  localhost: 172.28.1.2
-  #   ports:
-  #     - 3005:3005
-  #   depends_on:
-  #     - qgisserver
+  server:
+    build: './server'
+    command: /app/node_modules/.bin/nodemon ./src/index.js
+    container_name: docker_app_server
+    volumes:
+      - ./server:/app
+    environment: 
+      - NODE_ENV=development
+    networks:
+      bridge_geo:
+        ipv4_address: 172.28.1.3
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    #extra_hosts:
+    #  localhost: 172.28.1.2
+    ports:
+      - "3005:3005"
+    depends_on:
+      - qgisserver
+      - db
 
   react-ui:
     build:
@@ -62,6 +66,8 @@ services:
       localhost: 172.28.1.2
     ports:
       - "3000:3000"
+    links: 
+      - "server"
     container_name: react-ui
     stdin_open: true
     environment:

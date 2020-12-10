@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect } from "react"
 import "./Map.css";
 import MapContext from "./MapContext";
 import * as ol from "ol";
-// import DragBoxInteraction from "../Interactions/DragBoxInteraction";
 
 const Map = ({ children, zoom, center }) => {
 	const mapRef = useRef();
